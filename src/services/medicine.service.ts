@@ -1,16 +1,33 @@
 import { MedicineRepository } from '../repositories/medicine.repository';
 import { AIService } from './ai.service';
 import { prisma } from '../config/db';
+import Fuse from 'fuse.js';
 
 export class MedicineService {
   /**
    * Search for medicines by a query string
    */
   static async searchMedicines(query?: string) {
-    let results = await MedicineRepository.getMedicines(query);
+    let results = [];
+
+    if (!query) {
+      results = await MedicineRepository.getMedicines();
+    } else {
+      // 1. Fetch all medicines for in-memory fuzzy search (fine for a resume project size)
+      const allMedicines = await MedicineRepository.getMedicines();
+      
+      // 2. Initialize Fuse.js for typo tolerance (e.g., "paractemol" -> "paracetamol")
+      const fuse = new Fuse(allMedicines, {
+        keys: ['name', 'description', 'category'],
+        threshold: 0.4, // Lower is more strict. 0.4 allows some typos.
+      });
+
+      const fuseResults = fuse.search(query);
+      results = fuseResults.map(res => res.item);
+    }
     
     // AI ENGINE FALLBACK
-    // If user searched for something and local DB returned 0 results
+    // If user searched for something and local fuzzy search returned 0 results
     if (query && results.length === 0) {
       console.log(`[AI Engine] Local search missed for "${query}". Triggering Gemini AI Scraper...`);
       

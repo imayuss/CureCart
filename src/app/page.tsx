@@ -27,13 +27,32 @@ export default async function Home({
       </section>
 
       {/* Catalog Section */}
-      <section className="w-full max-w-7xl px-4 py-12">
-        <div className="flex items-center justify-between mb-8">
-          <h2 className="text-2xl font-bold text-gray-900">
-            {query ? `Search results for "${query}"` : 'Popular Medicines'}
-          </h2>
-          <span className="text-gray-500 text-sm">{medicines.length} items found</span>
-        </div>
+      <section className="w-full max-w-7xl px-4 py-12 flex flex-col md:flex-row gap-8">
+        
+        {/* Categories Sidebar */}
+        <aside className="w-full md:w-64 flex-shrink-0">
+          <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm sticky top-24">
+            <h3 className="text-lg font-bold text-gray-900 mb-4">Categories</h3>
+            <ul className="space-y-3">
+              {['All', 'Prescription Drugs', 'OTC Products', 'Protein Supplements', 'Hair Care', 'Skin Care'].map(category => (
+                <li key={category}>
+                  <a href={`/?q=${category === 'All' ? '' : category}`} className="text-gray-600 hover:text-blue-600 font-medium transition-colors">
+                    {category}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </aside>
+
+        {/* Medicines Grid */}
+        <div className="flex-1">
+          <div className="flex items-center justify-between mb-8">
+            <h2 className="text-2xl font-bold text-gray-900">
+              {query ? `Search results for "${query}"` : 'Popular Medicines'}
+            </h2>
+            <span className="text-gray-500 text-sm">{medicines.length} items found</span>
+          </div>
 
         {medicines.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
@@ -53,6 +72,7 @@ export default async function Home({
             </p>
           </div>
         )}
+        </div>
       </section>
       
     </main>

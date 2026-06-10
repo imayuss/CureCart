@@ -39,7 +39,7 @@ export async function POST(req: NextRequest) {
       data: {
         userId: session.user.id,
         imageUrl: "s3_placeholder_url", // Placeholder for actual S3 URL
-        verified: true,
+        status: "PENDING_REVIEW", // Requires manual admin approval now
         // we could also save aiAnalysis.doctorName and aiAnalysis.extractedMedicines in a JSON field if we added it to Prisma schema
       }
     });

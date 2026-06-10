@@ -47,6 +47,8 @@ model Medicine {
   stock           Int      @default(0)
   requiresPrescription Boolean @default(false)
   image           String?
+  category        String?
+  subCategory     String?
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 
