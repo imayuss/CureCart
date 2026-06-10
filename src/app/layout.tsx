@@ -14,8 +14,21 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "CureCart | AI-Powered Pharmacy",
-  description: "Order medicines online with AI-powered interactions checking.",
+  title: "CureCart - Your AI-Powered Digital Pharmacy",
+  description: "CureCart is a modern, AI-powered e-commerce pharmacy. We use Google Gemini to verify prescriptions instantly and provide real-time medicine data.",
+  keywords: ["Pharmacy", "Medicine Delivery", "AI Health", "Next.js E-Commerce"],
+  openGraph: {
+    title: "CureCart - Your AI-Powered Digital Pharmacy",
+    description: "CureCart is a modern, AI-powered e-commerce pharmacy.",
+    url: "https://curecart.example.com",
+    siteName: "CureCart",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "CureCart - Your AI-Powered Digital Pharmacy",
+    description: "CureCart is a modern, AI-powered e-commerce pharmacy.",
+  }
 };
 
 export default function RootLayout({
