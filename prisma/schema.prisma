@@ -1,0 +1,139 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// -----------------------------------------------------------------------------
+// USER MANAGEMENT
+// -----------------------------------------------------------------------------
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  password      String?
+  image         String?
+  role          Role      @default(USER)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Relationships
+  carts         Cart[]
+  orders        Order[]
+  prescriptions Prescription[]
+}
+
+enum Role {
+  USER
+  ADMIN
+  PHARMACIST
+}
+
+// -----------------------------------------------------------------------------
+// MEDICINE CATALOG
+// -----------------------------------------------------------------------------
+
+model Medicine {
+  id              String   @id @default(cuid())
+  name            String   @unique
+  description     String?
+  manufacturer    String?
+  price           Float
+  stock           Int      @default(0)
+  requiresPrescription Boolean @default(false)
+  image           String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  // AI & Medical Info
+  interactions    String?  // JSON string or related model for AI drug interactions
+  sideEffects     String?
+  
+  // Relationships
+  cartItems       CartItem[]
+  orderItems      OrderItem[]
+}
+
+// -----------------------------------------------------------------------------
+// SHOPPING CART
+// -----------------------------------------------------------------------------
+
+model Cart {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  items     CartItem[]
+}
+
+model CartItem {
+  id         String   @id @default(cuid())
+  cartId     String
+  cart       Cart     @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  medicineId String
+  medicine   Medicine @relation(fields: [medicineId], references: [id])
+  quantity   Int      @default(1)
+  
+  @@unique([cartId, medicineId])
+}
+
+// -----------------------------------------------------------------------------
+// ORDERS & PRESCRIPTIONS
+// -----------------------------------------------------------------------------
+
+model Order {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  status    OrderStatus @default(PENDING)
+  totalAmount Float
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  items     OrderItem[]
+  prescription Prescription?
+}
+
+enum OrderStatus {
+  PENDING
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+model OrderItem {
+  id         String   @id @default(cuid())
+  orderId    String
+  order      Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  medicineId String
+  medicine   Medicine @relation(fields: [medicineId], references: [id])
+  quantity   Int
+  priceAtBuy Float    // Snapshot of price when order was placed
+}
+
+model Prescription {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  orderId   String?  @unique
+  order     Order?   @relation(fields: [orderId], references: [id])
+  imageUrl  String   // URL to uploaded prescription
+  status    PrescriptionStatus @default(PENDING_REVIEW)
+  reviewedBy String? // Admin/Pharmacist ID who reviewed it
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum PrescriptionStatus {
+  PENDING_REVIEW
+  APPROVED
+  REJECTED
+}
