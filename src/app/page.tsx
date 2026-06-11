@@ -1,18 +1,38 @@
 import { MedicineService } from '@/services/medicine.service';
 import { MedicineCard } from '@/components/medicine/MedicineCard';
 import { SearchBar } from '@/components/medicine/SearchBar';
+import { SortSelect } from '@/components/medicine/SortSelect';
+import Link from 'next/link';
 
 export const dynamic = 'force-dynamic'; // Ensure we fetch fresh data
 
 export default async function Home({
   searchParams,
 }: {
-  searchParams: Promise<{ q?: string; page?: string }>;
+  searchParams: Promise<{ q?: string; page?: string; category?: string; sort?: string }>;
 }) {
   const resolvedParams = await searchParams;
   const query = resolvedParams.q;
+  const category = resolvedParams.category;
+  const sort = resolvedParams.sort || 'name-asc';
   const currentPage = Number(resolvedParams.page) || 1;
-  const medicines = await MedicineService.searchMedicines(query, currentPage);
+  const medicines = await MedicineService.searchMedicines(query, currentPage, category, sort);
+
+  const buildUrl = (overrides: { page?: number, category?: string | null, sort?: string }) => {
+    const params = new URLSearchParams();
+    if (query) params.set('q', query);
+    
+    const cat = overrides.category !== undefined ? overrides.category : category;
+    if (cat) params.set('category', cat);
+    
+    const srt = overrides.sort !== undefined ? overrides.sort : sort;
+    if (srt) params.set('sort', srt);
+    
+    const pg = overrides.page !== undefined ? overrides.page : currentPage;
+    if (pg > 1) params.set('page', pg.toString());
+    
+    return `/?${params.toString()}`;
+  };
 
   return (
     <main className="min-h-screen bg-gray-50 flex flex-col items-center">
@@ -36,24 +56,36 @@ export default async function Home({
           <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm sticky top-24">
             <h3 className="text-lg font-bold text-gray-900 mb-4">Categories</h3>
             <ul className="space-y-3">
-              {['All', 'Prescription Drugs', 'OTC Products', 'Protein Supplements', 'Hair Care', 'Skin Care'].map(category => (
-                <li key={category}>
-                  <a href={`/?q=${category === 'All' ? '' : category}`} className="text-gray-600 hover:text-blue-600 font-medium transition-colors">
-                    {category}
-                  </a>
-                </li>
-              ))}
+              {['All', 'Prescription Drugs', 'OTC Products', 'Protein Supplements', 'Hair Care', 'Skin Care'].map(catName => {
+                const isActive = catName === 'All' ? !category : category === catName;
+                return (
+                  <li key={catName}>
+                    <Link 
+                      href={buildUrl({ category: catName === 'All' ? null : catName, page: 1 })} 
+                      className={`font-medium transition-colors ${isActive ? 'text-blue-600' : 'text-gray-600 hover:text-blue-600'}`}
+                    >
+                      {catName}
+                    </Link>
+                  </li>
+                );
+              })}
             </ul>
           </div>
         </aside>
 
         {/* Medicines Grid */}
         <div className="flex-1">
-          <div className="flex items-center justify-between mb-8">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-8 gap-4">
             <h2 className="text-2xl font-bold text-gray-900">
-              {query ? `Search results for "${query}"` : 'Popular Medicines'}
+              {query ? `Search results for "${query}"` : category ? category : 'Popular Medicines'}
+              <span className="text-gray-500 text-sm ml-4 font-normal">{medicines.length} items on page</span>
             </h2>
-            <span className="text-gray-500 text-sm">{medicines.length} items found</span>
+            <div className="flex items-center gap-4">
+              {(query || category || sort !== 'name-asc') && (
+                <Link href="/" className="text-sm text-blue-600 hover:underline font-medium">Clear Filters</Link>
+              )}
+              <SortSelect />
+            </div>
           </div>
 
         {medicines.length > 0 ? (
@@ -79,21 +111,21 @@ export default async function Home({
         {medicines.length > 0 && (
           <div className="mt-12 flex justify-center items-center gap-4">
             {currentPage > 1 && (
-              <a 
-                href={`/?${query ? `q=${query}&` : ''}page=${currentPage - 1}`}
+              <Link 
+                href={buildUrl({ page: currentPage - 1 })}
                 className="px-6 py-2.5 bg-white border border-gray-200 text-gray-700 font-medium rounded-xl hover:bg-gray-50 transition-colors shadow-sm"
               >
                 Previous
-              </a>
+              </Link>
             )}
             <span className="text-gray-500 font-medium">Page {currentPage}</span>
             {medicines.length === 24 && (
-              <a 
-                href={`/?${query ? `q=${query}&` : ''}page=${currentPage + 1}`}
+              <Link 
+                href={buildUrl({ page: currentPage + 1 })}
                 className="px-6 py-2.5 bg-blue-600 border border-blue-600 text-white font-medium rounded-xl hover:bg-blue-700 transition-colors shadow-sm"
               >
                 Next Page
-              </a>
+              </Link>
             )}
           </div>
         )}

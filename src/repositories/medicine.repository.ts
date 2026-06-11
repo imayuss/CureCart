@@ -5,29 +5,34 @@ export class MedicineRepository {
    * Fetches all medicines, optionally filtering by a search term using pg_trgm.
    * If search term is empty, fetches all medicines.
    */
-  static async getMedicines(searchTerm?: string, page: number = 1) {
+  static async getMedicines(searchTerm?: string, page: number = 1, category?: string, sort?: string) {
     const take = 24;
     const skip = (page - 1) * take;
+
+    const where: any = {};
+    
     if (searchTerm) {
-      // Basic ilike search for now, can be optimized with Prisma full-text search or raw query for pg_trgm
-      return prisma.medicine.findMany({
-        where: {
-          OR: [
-            { name: { contains: searchTerm, mode: 'insensitive' } },
-            { description: { contains: searchTerm, mode: 'insensitive' } },
-            { manufacturer: { contains: searchTerm, mode: 'insensitive' } },
-          ],
-        },
-        take,
-        skip,
-        orderBy: { name: 'asc' },
-      });
+      where.OR = [
+        { name: { contains: searchTerm, mode: 'insensitive' } },
+        { description: { contains: searchTerm, mode: 'insensitive' } },
+        { manufacturer: { contains: searchTerm, mode: 'insensitive' } },
+      ];
+    }
+    
+    if (category) {
+      where.category = category;
     }
 
+    let orderBy: any = { name: 'asc' };
+    if (sort === 'name-desc') orderBy = { name: 'desc' };
+    if (sort === 'price-asc') orderBy = { price: 'asc' };
+    if (sort === 'price-desc') orderBy = { price: 'desc' };
+
     return prisma.medicine.findMany({
+      where,
       take,
       skip,
-      orderBy: { name: 'asc' },
+      orderBy,
     });
   }
 

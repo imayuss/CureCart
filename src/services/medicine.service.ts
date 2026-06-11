@@ -7,15 +7,11 @@ export class MedicineService {
   /**
    * Search for medicines by a query string with pagination
    */
-  static async searchMedicines(query?: string, page: number = 1) {
+  static async searchMedicines(query?: string, page: number = 1, category?: string, sort?: string) {
     let results = [];
 
-    if (!query) {
-      results = await MedicineRepository.getMedicines(undefined, page);
-    } else {
-      // Delegate to Prisma database ILIKE search directly
-      results = await MedicineRepository.getMedicines(query, page);
-    }
+    // Delegate to Prisma database ILIKE search directly
+    results = await MedicineRepository.getMedicines(query, page, category, sort);
     
     // AI ENGINE FALLBACK
     // If user searched for something and local fuzzy search returned 0 results
