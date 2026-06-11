@@ -8,36 +8,13 @@ export class MedicineService {
    * Search for medicines by a query string with pagination
    */
   static async searchMedicines(query?: string, page: number = 1, category?: string, sort?: string) {
-    let results = [];
-
     // Delegate to Prisma database ILIKE search directly
-    results = await MedicineRepository.getMedicines(query, page, category, sort);
+    const results = await MedicineRepository.getMedicines(query, page, category, sort);
     
-    // AI ENGINE FALLBACK
-    // If user searched for something and local fuzzy search returned 0 results
-    if (query && results.length === 0) {
-      console.log(`[AI Engine] Local search missed for "${query}". Triggering Gemini AI Scraper...`);
-      
-      const aiData = await AIService.scrapeMedicineDetails(query);
-      
-      if (aiData) {
-        // Dynamically add the scraped data to our local PostgreSQL database
-        const newMedicine = await prisma.medicine.create({
-          data: {
-            name: aiData.name,
-            description: aiData.description,
-            manufacturer: aiData.manufacturer,
-            price: aiData.price,
-            requiresPrescription: aiData.requiresPrescription,
-            stock: 100, // Default stock for newly discovered items
-          }
-        });
-        
-        // Push it into the results array so the UI renders it immediately
-        results.push(newMedicine);
-      }
-    }
-
+    // Note: We removed the synchronous AI scraping fallback here because calling Gemini during 
+    // a Server-Side Render holds the PostgreSQL connection open for 3-4 seconds. In a Serverless 
+    // environment like Vercel, this causes rapid connection exhaustion (Too many connections error).
+    
     return results;
   }
 
