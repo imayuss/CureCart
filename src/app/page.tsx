@@ -7,10 +7,12 @@ export const dynamic = 'force-dynamic'; // Ensure we fetch fresh data
 export default async function Home({
   searchParams,
 }: {
-  searchParams: Promise<{ q?: string }>;
+  searchParams: Promise<{ q?: string; page?: string }>;
 }) {
-  const { q: query } = await searchParams;
-  const medicines = await MedicineService.searchMedicines(query);
+  const resolvedParams = await searchParams;
+  const query = resolvedParams.q;
+  const currentPage = Number(resolvedParams.page) || 1;
+  const medicines = await MedicineService.searchMedicines(query, currentPage);
 
   return (
     <main className="min-h-screen bg-gray-50 flex flex-col items-center">
@@ -70,6 +72,29 @@ export default async function Home({
               We couldn't find any exact matches for "{query}". 
               Don't worry, our AI will automatically scrape the internet to find it for you in the next phase!
             </p>
+          </div>
+        )}
+
+        {/* Pagination Controls */}
+        {medicines.length > 0 && (
+          <div className="mt-12 flex justify-center items-center gap-4">
+            {currentPage > 1 && (
+              <a 
+                href={`/?${query ? `q=${query}&` : ''}page=${currentPage - 1}`}
+                className="px-6 py-2.5 bg-white border border-gray-200 text-gray-700 font-medium rounded-xl hover:bg-gray-50 transition-colors shadow-sm"
+              >
+                Previous
+              </a>
+            )}
+            <span className="text-gray-500 font-medium">Page {currentPage}</span>
+            {medicines.length === 24 && (
+              <a 
+                href={`/?${query ? `q=${query}&` : ''}page=${currentPage + 1}`}
+                className="px-6 py-2.5 bg-blue-600 border border-blue-600 text-white font-medium rounded-xl hover:bg-blue-700 transition-colors shadow-sm"
+              >
+                Next Page
+              </a>
+            )}
           </div>
         )}
         </div>

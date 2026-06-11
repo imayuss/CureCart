@@ -5,16 +5,16 @@ import Fuse from 'fuse.js';
 
 export class MedicineService {
   /**
-   * Search for medicines by a query string
+   * Search for medicines by a query string with pagination
    */
-  static async searchMedicines(query?: string) {
+  static async searchMedicines(query?: string, page: number = 1) {
     let results = [];
 
     if (!query) {
-      results = await MedicineRepository.getMedicines();
+      results = await MedicineRepository.getMedicines(undefined, page);
     } else {
       // Delegate to Prisma database ILIKE search directly
-      results = await MedicineRepository.getMedicines(query);
+      results = await MedicineRepository.getMedicines(query, page);
     }
     
     // AI ENGINE FALLBACK

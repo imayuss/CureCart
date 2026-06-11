@@ -5,7 +5,9 @@ export class MedicineRepository {
    * Fetches all medicines, optionally filtering by a search term using pg_trgm.
    * If search term is empty, fetches all medicines.
    */
-  static async getMedicines(searchTerm?: string) {
+  static async getMedicines(searchTerm?: string, page: number = 1) {
+    const take = 24;
+    const skip = (page - 1) * take;
     if (searchTerm) {
       // Basic ilike search for now, can be optimized with Prisma full-text search or raw query for pg_trgm
       return prisma.medicine.findMany({
@@ -16,13 +18,15 @@ export class MedicineRepository {
             { manufacturer: { contains: searchTerm, mode: 'insensitive' } },
           ],
         },
-        take: 24,
+        take,
+        skip,
         orderBy: { name: 'asc' },
       });
     }
 
     return prisma.medicine.findMany({
-      take: 24,
+      take,
+      skip,
       orderBy: { name: 'asc' },
     });
   }
