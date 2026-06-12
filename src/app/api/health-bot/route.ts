@@ -6,23 +6,22 @@ export async function POST(req: NextRequest) {
     const apiKey = process.env.GEMINI_API_KEY || "";
     const ai = new GoogleGenAI({ apiKey });
 
-    const { message, medicineName } = await req.json();
+    const { messages, medicineName } = await req.json();
 
-    if (!message) {
-      return NextResponse.json({ error: "Message is required" }, { status: 400 });
+    if (!messages || !Array.isArray(messages)) {
+      return NextResponse.json({ error: "Messages array is required" }, { status: 400 });
     }
 
     if (!apiKey) {
       return NextResponse.json({ 
-        reply: "⚠️ GEMINI_API_KEY is not set. Please configure it to use the AI Health Assistant." 
+        reply: "⚠️ GEMINI_API_KEY is not set in Vercel. Please add your Gemini API Key in your Vercel Dashboard to enable the AI." 
       });
     }
 
-    const prompt = `
+    const systemInstruction = `
       You are a professional Medical AI Assistant for CureCart pharmacy.
-      A user is asking a question about the medicine: "${medicineName || 'General Health'}".
-      Their question is: "${message}"
-
+      A user is asking questions about the medicine: "${medicineName || 'General Health'}".
+      
       STRICT RULES:
       1. You MUST ONLY use information from authenticated, official, and genuine sources like the FDA, WHO, Mayo Clinic, or NHS.
       2. If you do not know the answer or if the source is not verifiable, you MUST state: "I do not have verified data for this." Do not guess.
@@ -31,10 +30,20 @@ export async function POST(req: NextRequest) {
       "⚠️ This is AI-generated information based on official sources. Do not follow it blindly. Always consult a certified doctor."
     `;
 
+    // Map messages to Gemini format
+    // Filter out our custom initial greeting since it's just UI and not an actual model interaction
+    const chatHistory = messages
+      .filter((m: any) => !m.text.includes("Hi! I am the CureCart AI Medical Assistant"))
+      .map((m: any) => ({
+        role: m.role === 'user' ? 'user' : 'model',
+        parts: [{ text: m.text }]
+      }));
+
     const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
-      contents: prompt,
+      model: "gemini-2.0-flash",
+      contents: chatHistory,
       config: {
+        systemInstruction: systemInstruction,
         temperature: 0.1, // Very low temperature for factual, grounded responses
       }
     });

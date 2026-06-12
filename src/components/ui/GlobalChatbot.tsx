@@ -17,14 +17,15 @@ export function GlobalChatbot() {
     
     const userMessage = input;
     setInput('');
-    setMessages(prev => [...prev, { role: 'user', text: userMessage }]);
+    const newMessages: {role: 'user'|'bot', text: string}[] = [...messages, { role: 'user', text: userMessage }];
+    setMessages(newMessages);
     setLoading(true);
 
     try {
       const response = await fetch('/api/health-bot', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: userMessage, medicineName: 'General Health' })
+        body: JSON.stringify({ messages: newMessages, medicineName: 'General Health' })
       });
       
       const data = await response.json();
