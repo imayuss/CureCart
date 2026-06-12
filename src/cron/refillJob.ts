@@ -20,30 +20,38 @@ cron.schedule("0 0 * * *", async () => {
     const startOfDay = new Date(twentyFiveDaysAgo.setHours(0, 0, 0, 0));
     const endOfDay = new Date(twentyFiveDaysAgo.setHours(23, 59, 59, 999));
 
-    const pastOrders = await prisma.order.findMany({
+    const orders = await prisma.order.findMany({
       where: {
         createdAt: {
           gte: startOfDay,
           lte: endOfDay,
         },
-        status: "COMPLETED" // Or whichever status means it was delivered
+        status: "DELIVERED"
       },
       include: {
+        items: {
+          include: {
+            medicine: true,
+          },
+        },
         user: true,
       }
     });
 
-    console.log(`Found ${pastOrders.length} orders from 25 days ago.`);
+    console.log(`Found ${orders.length} orders from 25 days ago.`);
 
-    for (const order of pastOrders) {
-      if (order.user.email) {
-        // Tag them as "Refill Needed" in MailerPro so the marketing system automatically sends them an email campaign!
-        await MarketingService.syncUserToMailerPro(
-          order.user.email, 
-          order.user.name || "Customer", 
-          ["Refill Needed", "CureCart"]
-        );
-      }
+    for (const order of orders) {
+      if (!order.user || !order.user.email) continue;
+      
+      const customerEmail = order.user.email;
+      const customerName = order.user.name || "Customer";
+
+      // Tag them as "Refill Needed" in MailerPro so the marketing system automatically sends them an email campaign!
+      await MarketingService.syncUserToMailerPro(
+        order.user.email, 
+        order.user.name || "Customer", 
+        ["Refill Needed", "CureCart"]
+      );
     }
 
   } catch (error) {
