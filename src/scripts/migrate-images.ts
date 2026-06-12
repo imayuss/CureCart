@@ -23,7 +23,7 @@ const CSV_DIR = path.resolve('/Users/prince_agrawal/Downloads/1mg web scraping/A
 const PLACEHOLDER_IMG_ID = 'hx2gxivwmeoxxxsc1hix.png';
 
 const MAX_MEDICINES_PER_FILE = 500;
-const DELAY_BETWEEN_UPLOADS_MS = 1000;
+const DELAY_BETWEEN_UPLOADS_MS = 50;
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 async function migrateImages() {
