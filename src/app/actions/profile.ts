@@ -37,11 +37,11 @@ export async function updateProfile(formData: FormData) {
       }
 
       // Then upload the new one
-      const cleanBase64 = newImageBase64.split(',')[1]; // Remove data:image/jpeg;base64, prefix
+      // Pass the full newImageBase64 (including data:image/... prefix) so ImageKit detects the correct format
       finalImageUrl = await ImageKitService.uploadImage(
-        cleanBase64, 
+        newImageBase64, 
         '/curecart_profiles', 
-        `profile_${currentUser?.id || 'new'}`
+        `profile_${currentUser?.id || 'new'}.jpg`
       );
     }
 
