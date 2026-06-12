@@ -76,12 +76,18 @@ export class OrderService {
         });
       }
 
+      // 3.5 Fetch user to snapshot shipping address
+      const user = await tx.user.findUnique({ where: { id: userId } });
+      const fullAddress = [user?.address, user?.city, user?.state, user?.zipCode].filter(Boolean).join(", ");
+
       // 4. Create the Order
       const order = await tx.order.create({
         data: {
           userId,
           totalAmount,
           status: 'PENDING',
+          shippingAddress: fullAddress || null,
+          contactPhone: user?.phone || null,
           items: {
             create: orderItemsData,
           },

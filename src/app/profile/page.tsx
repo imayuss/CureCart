@@ -1,17 +1,26 @@
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/config/auth";
 import { redirect } from "next/navigation";
+import { prisma } from "@/config/db";
 import Image from "next/image";
 import Link from "next/link";
+import { MapPin, Phone, Edit2 } from "lucide-react";
 
 export default async function ProfilePage() {
   const session = await getServerSession(authOptions);
 
-  if (!session?.user) {
+  if (!session?.user?.email) {
     redirect("/login");
   }
 
-  const { user } = session;
+  // Fetch full user to get latest address details
+  const user = await prisma.user.findUnique({
+    where: { email: session.user.email }
+  });
+
+  if (!user) redirect("/login");
+
+  const fullAddress = [user.address, user.city, user.state, user.zipCode].filter(Boolean).join(", ");
 
   return (
     <main className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
@@ -19,7 +28,14 @@ export default async function ProfilePage() {
         
         {/* Profile Header */}
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-          <div className="bg-gradient-to-r from-blue-600 to-indigo-600 h-32 w-full"></div>
+          <div className="bg-gradient-to-r from-blue-600 to-indigo-600 h-32 w-full relative">
+            <Link 
+              href="/profile/edit"
+              className="absolute top-4 right-4 bg-white/20 hover:bg-white/30 backdrop-blur-md text-white px-4 py-2 rounded-full text-sm font-medium flex items-center gap-2 transition-colors"
+            >
+              <Edit2 className="w-4 h-4" /> Edit Profile
+            </Link>
+          </div>
           <div className="px-8 pb-8 relative">
             <div className="absolute -top-12 left-8 border-4 border-white rounded-full bg-white overflow-hidden h-24 w-24">
               {user.image ? (
@@ -42,26 +58,37 @@ export default async function ProfilePage() {
           </div>
         </div>
 
-        {/* Quick Stats / Info */}
+        {/* Info Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">Account Details</h2>
-            <div className="space-y-3 text-sm">
-              <div className="flex justify-between">
-                <span className="text-gray-500">Email</span>
-                <span className="font-medium text-gray-900">{user.email}</span>
+          <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 space-y-6">
+            <h2 className="text-lg font-semibold text-gray-900">Account Details</h2>
+            
+            <div className="space-y-4">
+              <div className="flex items-start gap-3">
+                <Phone className="w-5 h-5 text-gray-400 mt-0.5" />
+                <div>
+                  <p className="text-sm font-medium text-gray-900">Phone Number</p>
+                  <p className="text-sm text-gray-500">{user.phone || "Not provided"}</p>
+                </div>
               </div>
-              <div className="flex justify-between">
-                <span className="text-gray-500">Status</span>
-                <span className="font-medium text-green-600">Active</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-500">Authentication</span>
-                <span className="font-medium text-gray-900">
-                  {user.image ? "Google OAuth" : "Email / Password"}
-                </span>
+
+              <div className="flex items-start gap-3">
+                <MapPin className="w-5 h-5 text-gray-400 mt-0.5" />
+                <div>
+                  <p className="text-sm font-medium text-gray-900">Shipping Address</p>
+                  <p className="text-sm text-gray-500">
+                    {fullAddress || "No shipping address saved."}
+                  </p>
+                </div>
               </div>
             </div>
+
+            {(!user.phone || !user.address) && (
+              <div className="bg-orange-50 text-orange-700 p-4 rounded-xl text-sm border border-orange-100">
+                <p>Complete your profile to enable seamless checkout.</p>
+                <Link href="/profile/edit" className="font-semibold underline mt-1 block">Add Details &rarr;</Link>
+              </div>
+            )}
           </div>
 
           <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col justify-center items-center text-center">
