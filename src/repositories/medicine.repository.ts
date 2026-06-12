@@ -26,16 +26,15 @@ export class MedicineRepository {
       if (sort === 'price-asc') orderBy = { price: 'asc' };
       if (sort === 'price-desc') orderBy = { price: 'desc' };
 
-      // Run count and query in parallel
-      const [data, totalCount] = await Promise.all([
-        prisma.medicine.findMany({
-          where,
-          take,
-          skip,
-          orderBy,
-        }),
-        prisma.medicine.count({ where })
-      ]);
+      // Run count and query sequentially to avoid maxing out Aiven's tight connection limits
+      // Using Promise.all fires 2 concurrent queries, which easily exhausts the connection pool
+      const data = await prisma.medicine.findMany({
+        where,
+        take,
+        skip,
+        orderBy,
+      });
+      const totalCount = await prisma.medicine.count({ where });
 
       return {
         data,
