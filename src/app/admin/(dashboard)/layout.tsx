@@ -52,7 +52,7 @@ export default async function AdminLayout({
         
         <div className="p-4 border-t border-slate-800">
           <div className="flex items-center gap-3 px-3 py-2 text-sm">
-            <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold">
+            <div className="w-8 h-8 bg-emerald-600 rounded-full flex items-center justify-center text-white font-bold">
               {session.user?.name?.charAt(0) || "A"}
             </div>
             <div>
@@ -69,7 +69,7 @@ export default async function AdminLayout({
         <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-8 shrink-0">
           <h2 className="text-xl font-semibold text-gray-800">CureCart Management System</h2>
           <div className="flex gap-4">
-            <Link href="/" className="text-sm text-blue-600 font-medium hover:underline">
+            <Link href="/" className="text-sm text-emerald-600 font-medium hover:underline">
               Back to Storefront
             </Link>
           </div>

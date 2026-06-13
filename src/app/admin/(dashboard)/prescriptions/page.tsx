@@ -38,10 +38,10 @@ export default async function AdminPrescriptionsPage() {
               <div className="md:w-2/3 flex flex-col justify-between">
                 <div>
                   <h3 className="text-lg font-semibold mb-2">Patient: {p.user.name} ({p.user.email})</h3>
-                  <div className="bg-blue-50 text-blue-800 p-4 rounded-md mb-4 text-sm border border-blue-100">
+                  <div className="bg-emerald-50 text-emerald-800 p-4 rounded-md mb-4 text-sm border border-emerald-100">
                     <p className="font-semibold mb-1">🤖 AI Preliminary Analysis:</p>
-                    <p>Status: <span className="font-bold text-green-600">Verified by AI</span></p>
-                    <p className="text-xs mt-2 text-blue-600">The AI vision model has checked this document and believes it is a valid medical prescription. Human approval is required for compliance.</p>
+                    <p>Status: <span className="font-bold text-emerald-600">Verified by AI</span></p>
+                    <p className="text-xs mt-2 text-emerald-600">The AI vision model has checked this document and believes it is a valid medical prescription. Human approval is required for compliance.</p>
                   </div>
                   <p className="text-sm text-gray-600 mb-1">Submitted: {new Date(p.createdAt).toLocaleDateString()}</p>
                 </div>

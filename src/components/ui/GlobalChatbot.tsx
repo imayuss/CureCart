@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { MessageCircle, X } from 'lucide-react';
+import { MessageCircle, X, Send } from 'lucide-react';
 
 import ReactMarkdown from 'react-markdown';
 
@@ -49,39 +49,45 @@ export function GlobalChatbot() {
       {/* Floating Toggle Button */}
       <button 
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-6 right-6 w-14 h-14 bg-blue-600 hover:bg-blue-700 text-white rounded-full flex items-center justify-center shadow-xl hover:shadow-2xl transition-all z-50 hover:scale-105"
+        className="fixed bottom-6 right-6 w-16 h-16 bg-zinc-900 hover:bg-emerald-600 text-white rounded-full flex items-center justify-center shadow-lg transition-all z-50 hover:scale-110 group"
       >
-        {isOpen ? <X className="w-6 h-6" /> : <MessageCircle className="w-6 h-6" />}
+        <div className="absolute inset-0 rounded-full bg-emerald-400/30 animate-ping opacity-75 group-hover:opacity-0 transition-opacity"></div>
+        {isOpen ? <X className="w-6 h-6 relative z-10" /> : <MessageCircle className="w-6 h-6 relative z-10" />}
       </button>
 
       {/* Chat Window Overlay */}
       {isOpen && (
-        <div className="fixed bottom-24 right-6 w-[350px] h-[500px] bg-white rounded-2xl shadow-2xl border border-gray-200 flex flex-col z-50 overflow-hidden animate-in fade-in slide-in-from-bottom-10 duration-300">
+        <div className="fixed bottom-24 right-6 w-[380px] h-[520px] bg-white rounded-3xl shadow-2xl flex flex-col z-50 overflow-hidden animate-in fade-in slide-in-from-bottom-10 duration-300 border border-gray-100">
           
           {/* Header */}
-          <div className="bg-blue-600 p-4 text-white flex justify-between items-center shrink-0">
-            <div>
-              <h3 className="font-bold text-sm">🤖 Medical AI Assistant</h3>
-              <p className="text-xs text-blue-100 mt-1">Verified FDA/WHO Sources Only</p>
+          <div className="bg-zinc-900 p-5 text-white flex justify-between items-center shrink-0 relative overflow-hidden">
+            <div className="absolute inset-0 bg-dot-pattern-white opacity-10"></div>
+            <div className="relative z-10">
+              <h3 className="font-black text-sm flex items-center gap-2">🤖 Medical AI Assistant</h3>
+              <p className="text-xs text-zinc-400 mt-1 font-medium">Verified FDA/WHO Sources Only</p>
             </div>
-            <button onClick={() => setIsOpen(false)} className="text-blue-100 hover:text-white transition-colors">
+            <button onClick={() => setIsOpen(false)} className="relative z-10 text-zinc-400 hover:text-white transition-colors p-1 rounded-full hover:bg-white/10">
               <X className="w-5 h-5" />
             </button>
           </div>
 
           {/* Chat History */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50">
+          <div className="flex-1 overflow-y-auto p-5 space-y-4 bg-zinc-50">
             {messages.map((msg, i) => (
-              <div key={i} className={`p-3 rounded-xl text-sm shadow-sm ${msg.role === 'user' ? 'bg-blue-600 text-white ml-8 rounded-tr-sm' : 'bg-white border border-gray-100 text-gray-800 mr-8 rounded-tl-sm'}`}>
+              <div key={i} className={`max-w-[85%] p-4 text-sm ${
+                msg.role === 'user' 
+                  ? 'bg-emerald-600 text-white ml-auto rounded-2xl rounded-tr-sm shadow-sm' 
+                  : 'bg-white text-zinc-800 mr-auto rounded-2xl rounded-tl-sm shadow-sm border border-zinc-100'
+              }`}>
                 {msg.role === 'user' ? (
-                  <div className="whitespace-pre-wrap">{msg.text}</div>
+                  <div className="whitespace-pre-wrap font-medium">{msg.text}</div>
                 ) : (
-                  <div className="text-gray-800">
+                  <div className="text-gray-700">
                     <ReactMarkdown
                       components={{
                         ul: ({node, ...props}) => <ul className="list-disc pl-5 my-2 space-y-1" {...props} />,
                         ol: ({node, ...props}) => <ol className="list-decimal pl-5 my-2 space-y-1" {...props} />,
-                        li: ({node, ...props}) => <li className="text-gray-800" {...props} />,
+                        li: ({node, ...props}) => <li className="text-gray-700" {...props} />,
                         strong: ({node, ...props}) => <strong className="font-bold text-gray-900" {...props} />,
                         p: ({node, ...props}) => <p className="mb-2 last:mb-0 leading-relaxed" {...props} />
                       }}
@@ -93,26 +99,37 @@ export function GlobalChatbot() {
               </div>
             ))}
             {loading && (
-              <div className="bg-white border border-gray-100 text-gray-800 p-3 rounded-lg mr-8 w-fit text-sm animate-pulse rounded-tl-sm shadow-sm">
-                Consulting verified sources...
+              <div className="bg-white text-gray-500 p-4 rounded-2xl rounded-tl-sm mr-auto max-w-[85%] shadow-[0_2px_10px_rgb(0,0,0,0.06)]">
+                <div className="flex items-center gap-2">
+                  <span className="flex gap-1">
+                    <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{animationDelay: '0ms'}}></span>
+                    <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{animationDelay: '150ms'}}></span>
+                    <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{animationDelay: '300ms'}}></span>
+                  </span>
+                  <span className="text-xs font-medium ml-1">Thinking...</span>
+                </div>
               </div>
             )}
           </div>
           
           {/* Input Area */}
           <div className="p-4 bg-white border-t border-gray-100 shrink-0">
-            <div className="flex gap-2">
+            <div className="flex items-center gap-2 bg-gray-100 rounded-full px-4 py-1">
               <input 
                 type="text" 
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
                 placeholder="Ask a medical question..."
-                className="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                className="flex-1 bg-transparent border-0 py-3 text-sm focus:outline-none placeholder:text-gray-400 font-medium"
               />
-              <Button onClick={sendMessage} disabled={loading || !input.trim()} className="bg-blue-600 hover:bg-blue-700 h-9">
-                Send
-              </Button>
+              <button 
+                onClick={sendMessage} 
+                disabled={loading || !input.trim()} 
+                className="w-9 h-9 rounded-full bg-zinc-900 hover:bg-emerald-600 text-white flex items-center justify-center hover:scale-105 transition-all disabled:opacity-30 disabled:hover:scale-100 flex-shrink-0 shadow-sm"
+              >
+                <Send className="w-4 h-4" />
+              </button>
             </div>
           </div>
         </div>

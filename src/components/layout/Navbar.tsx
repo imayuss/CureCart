@@ -3,10 +3,20 @@
 import Link from 'next/link';
 import { useSession, signOut } from 'next-auth/react';
 import { useEffect, useState } from 'react';
+import { Search, ShoppingBag, User } from 'lucide-react';
 
 export function Navbar() {
   const { data: session, status } = useSession();
   const [cartCount, setCartCount] = useState(0);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 10);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   useEffect(() => {
     const fetchCart = () => {
@@ -14,77 +24,84 @@ export function Navbar() {
         fetch('/api/cart')
           .then(res => res.json())
           .then(data => {
-            if (data && data.items) {
-              // The user requested the number of *unique* items, which is the length of the items array
-              setCartCount(data.items.length);
-            }
+            if (data && data.items) setCartCount(data.items.length);
           })
-          .catch(err => console.error("Failed to fetch cart:", err));
+          .catch(err => console.error(err));
       } else {
         setCartCount(0);
       }
     };
-
     fetchCart();
-
     window.addEventListener('cartUpdated', fetchCart);
     return () => window.removeEventListener('cartUpdated', fetchCart);
   }, [status]);
 
   return (
-    <nav className="sticky top-0 z-50 w-full border-b bg-white/80 backdrop-blur-md">
-      <div className="container mx-auto flex h-16 items-center justify-between px-4">
+    <nav className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 border-b ${
+      scrolled ? 'bg-white/80 backdrop-blur-xl border-gray-200 shadow-sm py-3' : 'bg-white border-transparent py-4'
+    }`}>
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-6 lg:px-8">
         
         {/* Logo */}
-        <div className="flex items-center gap-2">
-          <Link href="/" className="flex items-center space-x-2">
-            <span className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-              CureCart
-            </span>
-          </Link>
-        </div>
+        <Link href="/" className="flex items-center gap-2 group">
+          <div className="w-8 h-8 bg-zinc-900 rounded-lg flex items-center justify-center text-white font-black group-hover:bg-emerald-600 transition-colors">
+            C
+          </div>
+          <span className="text-xl font-black text-zinc-900 tracking-tight">
+            CureCart
+          </span>
+        </Link>
 
         {/* Desktop Navigation */}
-        <div className="hidden md:flex flex-1 items-center justify-center space-x-8">
-          <Link href="/" className="text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors">
+        <div className="hidden md:flex items-center gap-8">
+          <Link href="/" className="text-sm font-semibold text-zinc-600 hover:text-zinc-900 transition-colors">
             Medicines
           </Link>
-          <Link href="/consult" className="text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors">
+          <Link href="/consult" className="text-sm font-semibold text-zinc-600 hover:text-zinc-900 transition-colors">
             Consult Doctor
           </Link>
-          <Link href="/lab-tests" className="text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors">
+          <Link href="/lab-tests" className="text-sm font-semibold text-zinc-600 hover:text-zinc-900 transition-colors">
             Lab Tests
           </Link>
         </div>
 
-        {/* Right side actions */}
-        <div className="flex items-center justify-end space-x-4">
-          <Link href="/cart" className="relative p-2 text-gray-600 hover:text-blue-600 transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-            </svg>
-            <span className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1/4 -translate-y-1/4 bg-red-600 rounded-full">
-              {cartCount}
-            </span>
+        {/* Right Actions */}
+        <div className="flex items-center gap-5">
+          <Link href="/search" className="text-zinc-500 hover:text-zinc-900 transition-colors hidden sm:block">
+            <Search className="w-5 h-5" />
+          </Link>
+          
+          <Link href="/cart" className="relative text-zinc-500 hover:text-zinc-900 transition-colors group">
+            <ShoppingBag className="w-5 h-5 group-hover:scale-110 transition-transform" />
+            {cartCount > 0 && (
+              <span className="absolute -top-1.5 -right-1.5 flex items-center justify-center min-w-[18px] h-[18px] px-1 text-[10px] font-bold text-white bg-emerald-600 rounded-full shadow-sm ring-2 ring-white">
+                {cartCount}
+              </span>
+            )}
           </Link>
 
+          <div className="h-5 w-px bg-gray-200 mx-2 hidden sm:block"></div>
+
           {status === 'loading' ? (
-            <div className="h-9 w-24 bg-gray-200 animate-pulse rounded-md"></div>
+            <div className="h-9 w-24 bg-gray-100 animate-pulse rounded-full"></div>
           ) : session ? (
             <div className="flex items-center gap-4">
-              <Link href="/profile" className="text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors hidden sm:inline-block">
-                Hi, {session.user?.name?.split(' ')[0] || 'User'}
+              <Link href="/profile" className="flex items-center gap-2 text-sm font-semibold text-zinc-700 hover:text-emerald-600 transition-colors">
+                <div className="w-8 h-8 rounded-full bg-zinc-100 flex items-center justify-center border border-zinc-200">
+                  <User className="w-4 h-4 text-zinc-500" />
+                </div>
+                <span className="hidden sm:block">{session.user?.name?.split(' ')[0]}</span>
               </Link>
               <button
                 onClick={() => signOut({ callbackUrl: '/' })}
-                className="hidden md:inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-blue-600 bg-blue-50 border border-blue-100 rounded-md shadow-sm hover:bg-blue-100 focus:outline-none transition-colors"
+                className="hidden md:block text-xs font-bold text-zinc-500 hover:text-zinc-900 transition-colors"
               >
                 Sign out
               </button>
             </div>
           ) : (
-            <Link href="/login" className="hidden md:inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
-              Login / Sign up
+            <Link href="/login" className="text-sm font-bold bg-zinc-900 text-white px-5 py-2.5 rounded-full hover:bg-emerald-600 transition-colors shadow-sm">
+              Sign In
             </Link>
           )}
         </div>

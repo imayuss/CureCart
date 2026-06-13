@@ -63,12 +63,12 @@ export function SearchBar() {
   };
 
   return (
-    <div className="w-full max-w-2xl relative" ref={containerRef}>
-      <form onSubmit={handleSearch} className="flex w-full items-center space-x-2 relative z-10">
-        <div className="relative flex-1">
+    <div className="w-full max-w-3xl relative mx-auto" ref={containerRef}>
+      <form onSubmit={handleSearch} className="flex w-full items-center relative z-10 group">
+        <div className="relative w-full">
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400"
+            className="absolute left-6 top-1/2 h-6 w-6 -translate-y-1/2 text-zinc-400 group-focus-within:text-emerald-500 transition-colors"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -77,18 +77,18 @@ export function SearchBar() {
           </svg>
           <Input
             type="text"
-            placeholder="Search for medicines, health products, or conditions..."
-            className="pl-10 py-6 text-base rounded-full border-gray-300 shadow-sm focus-visible:ring-blue-500 w-full"
+            placeholder="Search for medicines, health products..."
+            className="pl-16 pr-36 py-8 text-lg rounded-2xl border border-zinc-200 shadow-sm bg-white focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-0 focus-visible:border-emerald-500 w-full transition-all hover:border-zinc-300 placeholder:text-zinc-400 font-medium"
             value={query}
             onChange={handleInputChange}
             onFocus={() => {
               if (suggestions.length > 0) setShowSuggestions(true);
             }}
           />
+          <Button type="submit" className="absolute right-2 top-1/2 -translate-y-1/2 rounded-xl px-8 py-6 bg-zinc-900 hover:bg-emerald-600 text-white text-base font-bold shadow-sm hover:shadow-md transition-all border-0">
+            Search
+          </Button>
         </div>
-        <Button type="submit" className="rounded-full px-8 py-6 bg-blue-600 hover:bg-blue-700 text-base font-semibold transition-all shadow-md hover:shadow-lg">
-          Search
-        </Button>
       </form>
 
       {/* Autocomplete Dropdown */}
@@ -103,13 +103,13 @@ export function SearchBar() {
                     setShowSuggestions(false);
                     setQuery(item.name);
                   }}
-                  className="block px-4 py-3 hover:bg-gray-50 transition-colors flex items-center justify-between"
+                  className="block px-4 py-3 hover:bg-zinc-50 transition-colors flex items-center justify-between"
                 >
                   <div className="flex flex-col">
-                    <span className="text-sm font-medium text-gray-900">{item.name}</span>
-                    {item.category && <span className="text-xs text-gray-500 mt-0.5">{item.category}</span>}
+                    <span className="text-sm font-bold text-zinc-900">{item.name}</span>
+                    {item.category && <span className="text-xs text-zinc-500 mt-0.5">{item.category}</span>}
                   </div>
-                  <span className="text-sm font-semibold text-blue-600">₹{item.price}</span>
+                  <span className="text-sm font-black text-emerald-600">₹{item.price}</span>
                 </Link>
               </li>
             ))}

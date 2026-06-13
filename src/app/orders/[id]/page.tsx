@@ -31,81 +31,83 @@ export default async function OrderConfirmationPage({ params }: { params: { id: 
   }
 
   return (
-    <main className="min-h-screen bg-gray-50 py-16 px-4 sm:px-6 lg:px-8">
+    <main className="min-h-screen bg-gray-50/50 py-16 px-4 sm:px-6 lg:px-8">
       <div className="max-w-2xl mx-auto space-y-8">
         
         {/* Success Header */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 text-center">
-          <div className="w-20 h-20 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-6">
-            <CheckCircle2 className="w-10 h-10 text-green-500" />
-          </div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Order Confirmed!</h1>
-          <p className="text-gray-500 mb-6">Thank you for your purchase. Your order has been successfully placed.</p>
-          
-          <div className="inline-flex items-center gap-2 bg-gray-50 px-4 py-2 rounded-lg text-sm font-medium text-gray-600 border border-gray-200">
-            <Package className="w-4 h-4" />
-            Order ID: {order.id}
+        <div className="bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-12 text-center relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-br from-emerald-50/50 to-blue-50/30"></div>
+          <div className="relative z-10">
+            <div className="w-24 h-24 bg-gradient-to-br from-emerald-100 to-emerald-50 rounded-full flex items-center justify-center mx-auto mb-8 shadow-lg shadow-emerald-100">
+              <CheckCircle2 className="w-12 h-12 text-emerald-500" />
+            </div>
+            <h1 className="text-4xl font-black text-gray-900 tracking-tight mb-3">Order Confirmed!</h1>
+            <p className="text-gray-500 font-medium mb-8 max-w-sm mx-auto">Thank you for your purchase. Your order has been successfully placed and is being processed.</p>
+            
+            <div className="inline-flex items-center gap-2 bg-gray-50 px-5 py-3 rounded-xl text-sm font-bold text-gray-600 border border-gray-100">
+              <Package className="w-4 h-4" />
+              Order ID: <span className="font-mono">{order.id}</span>
+            </div>
           </div>
         </div>
 
         {/* Shipping & Order Summary */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-          <div className="p-6 border-b border-gray-100">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">Shipping Details</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="flex items-start gap-3">
-                <MapPin className="w-5 h-5 text-gray-400 mt-0.5" />
-                <div>
-                  <p className="text-sm text-gray-900 leading-relaxed">
-                    {order.shippingAddress || "No shipping address provided."}
-                  </p>
+        <div className="bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] overflow-hidden">
+          <div className="p-8 border-b border-gray-100">
+            <h2 className="text-lg font-black text-gray-900 mb-6">Shipping Details</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="flex items-start gap-4 p-4 bg-gray-50 rounded-2xl">
+                <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center flex-shrink-0">
+                  <MapPin className="w-5 h-5 text-gray-500" />
                 </div>
+                <p className="text-sm text-gray-700 font-medium leading-relaxed">
+                  {order.shippingAddress || "No shipping address provided."}
+                </p>
               </div>
-              <div className="flex items-start gap-3">
-                <Phone className="w-5 h-5 text-gray-400 mt-0.5" />
-                <div>
-                  <p className="text-sm text-gray-900">{order.contactPhone || "No phone provided."}</p>
+              <div className="flex items-start gap-4 p-4 bg-gray-50 rounded-2xl">
+                <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center flex-shrink-0">
+                  <Phone className="w-5 h-5 text-gray-500" />
                 </div>
+                <p className="text-sm text-gray-700 font-medium">{order.contactPhone || "No phone provided."}</p>
               </div>
             </div>
           </div>
 
-          <div className="p-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">Order Summary</h2>
+          <div className="p-8">
+            <h2 className="text-lg font-black text-gray-900 mb-6">Order Summary</h2>
             <div className="space-y-4">
               {order.items.map((item) => (
-                <div key={item.id} className="flex justify-between items-center">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-gray-100 rounded flex items-center justify-center border border-gray-200 overflow-hidden">
+                <div key={item.id} className="flex justify-between items-center p-3 rounded-xl hover:bg-gray-50 transition-colors">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 bg-gray-50 rounded-xl flex items-center justify-center overflow-hidden">
                       {item.medicine.image ? (
-                        <img src={item.medicine.image} alt={item.medicine.name} className="w-full h-full object-cover" />
+                        <img src={item.medicine.image} alt={item.medicine.name} className="w-full h-full object-contain p-1" />
                       ) : (
-                        <Package className="w-4 h-4 text-gray-400" />
+                        <Package className="w-5 h-5 text-gray-300" />
                       )}
                     </div>
                     <div>
-                      <p className="text-sm font-medium text-gray-900">{item.medicine.name}</p>
-                      <p className="text-xs text-gray-500">Qty: {item.quantity}</p>
+                      <p className="text-sm font-bold text-gray-900">{item.medicine.name}</p>
+                      <p className="text-xs text-gray-400 font-medium">Qty: {item.quantity}</p>
                     </div>
                   </div>
-                  <p className="text-sm font-medium text-gray-900">₹{(item.priceAtBuy * item.quantity).toFixed(2)}</p>
+                  <p className="text-sm font-black text-gray-900">₹{(item.priceAtBuy * item.quantity).toFixed(2)}</p>
                 </div>
               ))}
             </div>
 
-            <div className="mt-6 pt-6 border-t border-gray-100 flex justify-between items-center font-bold text-gray-900">
-              <span className="text-lg">Total Paid</span>
-              <span className="text-xl text-blue-600">₹{order.totalAmount.toFixed(2)}</span>
+            <div className="mt-8 pt-6 border-t border-gray-100 flex justify-between items-baseline">
+              <span className="text-lg font-black text-gray-900">Total Paid</span>
+              <span className="text-2xl font-black bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">₹{order.totalAmount.toFixed(2)}</span>
             </div>
           </div>
         </div>
 
-        <div className="flex justify-center gap-4 pt-4">
-          <Link href="/orders" className="text-blue-600 font-medium hover:text-blue-700 hover:underline">
+        <div className="flex justify-center gap-6 pt-4">
+          <Link href="/orders" className="px-6 py-3 bg-white rounded-xl text-sm font-bold text-gray-700 shadow-[0_2px_10px_rgb(0,0,0,0.06)] hover:shadow-[0_4px_20px_rgb(0,0,0,0.1)] hover:-translate-y-0.5 transition-all">
             View All Orders
           </Link>
-          <span className="text-gray-300">|</span>
-          <Link href="/" className="text-blue-600 font-medium hover:text-blue-700 hover:underline">
+          <Link href="/" className="px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl text-sm font-bold text-white shadow-lg shadow-blue-500/25 hover:shadow-xl hover:-translate-y-0.5 transition-all">
             Continue Shopping
           </Link>
         </div>

@@ -53,13 +53,13 @@ export default async function AdminDashboard() {
           </div>
         </div>
         
-        <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm flex items-start gap-4">
-          <div className="p-3 bg-blue-100 text-blue-600 rounded-lg shrink-0">
+        <div className="bg-white p-6 rounded-xl border border-zinc-200 shadow-sm flex items-start gap-4">
+          <div className="p-3 bg-emerald-100 text-emerald-600 rounded-lg shrink-0">
             <ShoppingCart className="w-6 h-6" />
           </div>
           <div>
-            <p className="text-sm font-medium text-gray-500">Active Orders</p>
-            <h3 className="text-2xl font-bold text-gray-900 mt-1">{activeOrdersCount}</h3>
+            <p className="text-sm font-medium text-zinc-500">Active Orders</p>
+            <h3 className="text-2xl font-bold text-zinc-900 mt-1">{activeOrdersCount}</h3>
           </div>
         </div>
         
@@ -89,7 +89,7 @@ export default async function AdminDashboard() {
         <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden flex flex-col">
           <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
             <h2 className="text-lg font-semibold text-gray-900">Recent Orders</h2>
-            <Link href="/admin/orders" className="text-sm text-blue-600 hover:text-blue-700 font-medium">View all</Link>
+            <Link href="/admin/orders" className="text-sm text-emerald-600 hover:text-emerald-700 font-medium">View all</Link>
           </div>
           <div className="p-0 flex-1">
             {recentOrders.length === 0 ? (

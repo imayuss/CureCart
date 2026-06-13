@@ -5,7 +5,7 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 
-import { Minus, Plus } from "lucide-react";
+import { Minus, Plus, ShoppingCart } from "lucide-react";
 
 export function AddToCartForm({ medicineId, stock }: { medicineId: string, stock: number }) {
   const sessionObj = useSession();
@@ -57,31 +57,31 @@ export function AddToCartForm({ medicineId, stock }: { medicineId: string, stock
 
   if (stock === 0) {
     return (
-      <div className="w-full text-center py-3 px-4 bg-red-50 text-red-600 rounded-lg font-medium border border-red-100">
+      <div className="w-full text-center py-4 px-6 bg-red-50 text-red-600 rounded-xl font-bold border border-red-100 text-sm">
         Out of Stock
       </div>
     );
   }
 
   return (
-    <div className="flex w-full items-center gap-3">
-      <div className="flex items-center h-11 border border-gray-200 rounded-lg bg-white overflow-hidden shrink-0">
+    <div className="flex w-full items-center gap-4">
+      <div className="flex items-center h-12 bg-gray-100 rounded-full overflow-hidden shrink-0">
         <button 
           type="button"
           onClick={decrement}
           disabled={quantity <= 1 || loading}
-          className="w-10 h-full flex items-center justify-center text-gray-500 hover:bg-gray-50 disabled:opacity-50 transition-colors"
+          className="w-11 h-full flex items-center justify-center text-gray-600 hover:bg-gray-200 disabled:opacity-30 transition-colors"
         >
           <Minus className="w-4 h-4" />
         </button>
-        <div className="w-12 h-full flex items-center justify-center font-medium text-gray-900 border-x border-gray-100">
+        <div className="w-12 h-full flex items-center justify-center font-bold text-sm text-gray-900">
           {quantity}
         </div>
         <button 
           type="button"
           onClick={increment}
           disabled={quantity >= stock || loading}
-          className="w-10 h-full flex items-center justify-center text-gray-500 hover:bg-gray-50 disabled:opacity-50 transition-colors"
+          className="w-11 h-full flex items-center justify-center text-gray-600 hover:bg-gray-200 disabled:opacity-30 transition-colors"
         >
           <Plus className="w-4 h-4" />
         </button>
@@ -90,8 +90,13 @@ export function AddToCartForm({ medicineId, stock }: { medicineId: string, stock
       <Button 
         onClick={handleAddToCart} 
         disabled={loading}
-        className="flex-1 bg-blue-600 hover:bg-blue-700 text-white transition-colors h-11 text-base font-medium rounded-lg shadow-sm"
+        className="flex-1 bg-zinc-900 hover:bg-emerald-600 text-white transition-colors duration-300 h-12 text-sm font-bold rounded-xl shadow-sm border-0 flex items-center justify-center gap-2"
       >
+        {loading ? (
+          <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+        ) : (
+          <ShoppingCart className="w-4 h-4" />
+        )}
         {loading ? "Adding..." : "Add to Cart"}
       </Button>
     </div>
