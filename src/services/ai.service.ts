@@ -33,7 +33,8 @@ export class AIService {
         contents: prompt,
         config: {
           temperature: 0.2, // Low temperature for more factual responses
-          responseMimeType: "application/json"
+          responseMimeType: "application/json",
+          tools: [{ googleSearch: {} }]
         }
       });
 
@@ -174,7 +175,8 @@ export class AIService {
         contents: prompt,
         config: {
           temperature: 0.1,
-          responseMimeType: "application/json"
+          responseMimeType: "application/json",
+          tools: [{ googleSearch: {} }]
         }
       });
 
