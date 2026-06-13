@@ -24,8 +24,8 @@ export default async function Home({
   const currentPage = page;
 
   const result = await MedicineService.searchMedicines(query || undefined, page, category || undefined, sort || undefined, letter || undefined);
-  const { data: medicines, total } = result;
-  const totalPages = Math.ceil(total / limit);
+  const { data: medicines, totalCount } = result;
+  const totalPages = Math.ceil(totalCount / limit);
 
   // If no medicines found for a direct search query, we show the AI Fallback
   const showFallback = query && medicines.length === 0;
@@ -52,21 +52,25 @@ export default async function Home({
   return (
     <main className="min-h-screen bg-white flex flex-col items-center pt-20">
       
-      {/* Clean Monochrome Hero Section */}
-      <section className="w-full max-w-5xl mx-auto py-24 px-4 text-center space-y-8">
-        <h1 className="text-5xl md:text-7xl font-black text-zinc-900 tracking-tight leading-[1.1]">
-          Modern healthcare.<br />
-          <span className="text-emerald-600">Delivered instantly.</span>
-        </h1>
-        <p className="text-lg md:text-xl text-zinc-500 max-w-2xl mx-auto font-medium">
-          Search over 10,000+ verified medicines. AI-powered prescription checks and 10-minute delivery to your door.
-        </p>
-        <div className="pt-4 w-full max-w-2xl mx-auto">
-          <SearchBar />
-        </div>
-      </section>
-
-      {/* Main Content Layout */}
+      {/* Hero Section - Reduced Size */}
+      {!query && !category && !letter && (
+        <section className="bg-white border-b border-gray-100">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-14 text-center">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-zinc-900 tracking-tight leading-[1.1] mb-4">
+              Modern healthcare. <br className="hidden sm:block"/>
+              <span className="text-emerald-600 inline-block mt-2">Delivered instantly.</span>
+            </h1>
+            <p className="text-sm md:text-base text-zinc-500 font-medium max-w-2xl mx-auto mb-8 leading-relaxed">
+              Search over 10,000+ verified medicines. AI-powered prescription checks and 10-minute delivery to your door.
+            </p>
+            
+            {/* Main Search Bar */}
+            <div className="max-w-2xl mx-auto px-4">
+              <SearchBar />
+            </div>
+          </div>
+        </section>
+      )} {/* Main Content Layout */}
       <section className="w-full max-w-[1400px] px-4 sm:px-6 lg:px-8 pb-24 flex flex-col md:flex-row gap-10">
         
         {/* Minimalist Sidebar */}
@@ -104,7 +108,7 @@ export default async function Home({
               <h2 className="text-2xl font-black text-zinc-900">
                 {query ? `Search results for "${query}"` : category ? category : 'All Products'}
               </h2>
-              <p className="text-sm text-zinc-500 font-medium mt-1">{total} items found</p>
+              <p className="text-sm text-zinc-500 font-medium mt-1">{totalCount} items found</p>
             </div>
             
             {/* Sort Select Placeholder (would be extracted to a minimalist component) */}

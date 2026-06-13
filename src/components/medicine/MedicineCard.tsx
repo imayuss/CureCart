@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import { AddToCartForm } from './AddToCartForm';
 
 export interface MedicineProps {
   id: string;
@@ -16,14 +17,13 @@ export interface MedicineProps {
 
 export function MedicineCard({ medicine }: { medicine: MedicineProps }) {
   return (
-    <Link 
-      href={`/medicine/${medicine.id}`}
+    <div 
       itemScope 
       itemType="http://schema.org/Product" 
       className="group flex flex-col bg-white rounded-2xl overflow-hidden hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all duration-300 border border-gray-100 h-full"
     >
       {/* Image Container - takes up top portion */}
-      <div className="relative aspect-square w-full bg-zinc-50 flex items-center justify-center p-6 border-b border-gray-50 overflow-hidden">
+      <Link href={`/medicine/${medicine.id}`} className="relative aspect-square w-full bg-zinc-50 flex items-center justify-center p-6 border-b border-gray-50 overflow-hidden block">
         {medicine.image ? (
           <Image
             src={medicine.image}
@@ -49,38 +49,38 @@ export function MedicineCard({ medicine }: { medicine: MedicineProps }) {
 
         {/* Out of stock overlay */}
         {medicine.stock === 0 && (
-          <div className="absolute inset-0 bg-white/60 backdrop-blur-[2px] flex items-center justify-center">
+          <div className="absolute inset-0 bg-white/60 backdrop-blur-[2px] flex items-center justify-center pointer-events-none">
             <span className="bg-zinc-900 text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-lg">Out of Stock</span>
           </div>
         )}
-      </div>
+      </Link>
 
       {/* Info Container */}
       <div className="p-5 flex flex-col flex-1">
-        <p className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider mb-2 truncate">
-          {medicine.manufacturer || 'General'}
-        </p>
-        
-        <h3 itemProp="name" className="font-bold text-base text-gray-900 line-clamp-2 leading-snug group-hover:text-emerald-700 transition-colors">
-          {medicine.name}
-        </h3>
-        
-        {/* Fill available space to push price down */}
-        <div className="flex-1 min-h-[1rem]"></div>
-
-        <div className="mt-4 flex items-end justify-between border-t border-gray-50 pt-4">
-          <div>
-            <p className="text-[10px] text-gray-400 font-medium mb-0.5">PRICE</p>
-            <span itemProp="price" className="text-xl font-black text-gray-900">₹{medicine.price.toFixed(2)}</span>
-          </div>
+        <Link href={`/medicine/${medicine.id}`} className="flex flex-col flex-1">
+          <p className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider mb-2 truncate">
+            {medicine.manufacturer || 'General'}
+          </p>
           
-          <div className="w-8 h-8 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all -translate-x-2 group-hover:translate-x-0">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M12 4v16m8-8H4" />
-            </svg>
+          <h3 itemProp="name" className="font-bold text-base text-gray-900 line-clamp-2 leading-snug group-hover:text-emerald-700 transition-colors">
+            {medicine.name}
+          </h3>
+          
+          {/* Fill available space to push price down */}
+          <div className="flex-1 min-h-[1rem]"></div>
+
+          <div className="mt-4 flex items-end justify-between border-t border-gray-50 pt-4">
+            <div>
+              <p className="text-[10px] text-gray-400 font-medium mb-0.5">PRICE</p>
+              <span itemProp="price" className="text-xl font-black text-gray-900">₹{medicine.price.toFixed(2)}</span>
+            </div>
           </div>
+        </Link>
+        
+        <div className="mt-4 w-full">
+          <AddToCartForm medicineId={medicine.id} stock={medicine.stock} />
         </div>
       </div>
-    </Link>
+    </div>
   );
 }
