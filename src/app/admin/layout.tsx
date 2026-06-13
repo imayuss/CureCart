@@ -11,14 +11,14 @@ export default async function AdminLayout({
 }) {
   const session = await getServerSession(authOptions);
 
-  // Ensure user is authenticated
+  // Ensure user is authenticated and is an ADMIN
   if (!session) {
     redirect("/login");
   }
 
-  // TODO: In a production app, verify session.user.role === 'ADMIN'
-  // Since we don't have a UI to set roles yet, we'll bypass role checking for the demo
-  // if (session.user.role !== "ADMIN") redirect("/");
+  if (session.user.role !== "ADMIN") {
+    redirect("/"); // Redirect standard users to the storefront
+  }
 
   return (
     <div className="flex min-h-screen bg-gray-50">
