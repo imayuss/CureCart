@@ -56,7 +56,9 @@ export async function PUT(req: NextRequest) {
     const existingMed = await prisma.medicine.findUnique({ where: { id } });
     if (!existingMed) return NextResponse.json({ error: "Medicine not found" }, { status: 404 });
 
-    if (imageFileId && existingMed.imageFileId && existingMed.imageFileId !== imageFileId) {
+    const DEFAULT_IMAGE_FILE_ID = "6a2d32e85c7cd75eb8b497bc";
+
+    if (imageFileId && existingMed.imageFileId && existingMed.imageFileId !== imageFileId && existingMed.imageFileId !== DEFAULT_IMAGE_FILE_ID) {
       try {
         await imagekit.deleteFile(existingMed.imageFileId);
       } catch (err) {
@@ -98,7 +100,9 @@ export async function DELETE(req: NextRequest) {
 
     const existingMed = await prisma.medicine.findUnique({ where: { id } });
     
-    if (existingMed?.imageFileId) {
+    const DEFAULT_IMAGE_FILE_ID = "6a2d32e85c7cd75eb8b497bc";
+    
+    if (existingMed?.imageFileId && existingMed.imageFileId !== DEFAULT_IMAGE_FILE_ID) {
       try {
         await imagekit.deleteFile(existingMed.imageFileId);
       } catch (err) {
