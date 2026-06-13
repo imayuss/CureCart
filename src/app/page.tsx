@@ -23,7 +23,7 @@ export default async function Home({
 
   const currentPage = page;
 
-  const result = await MedicineService.getMedicines({ page, limit, category, query, letter, sort });
+  const result = await MedicineService.searchMedicines(query || undefined, page, category || undefined, sort || undefined, letter || undefined);
   const { data: medicines, total } = result;
   const totalPages = Math.ceil(total / limit);
 
