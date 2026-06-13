@@ -23,6 +23,25 @@ export class CartService {
     return CartRepository.upsertCartItem(cart.id, medicineId, quantity);
   }
 
+  static async setCartItemQuantity(userId: string, medicineId: string, quantity: number) {
+    if (quantity <= 0) {
+      return this.removeFromCart(userId, medicineId);
+    }
+
+    // Business Logic: Verify medicine exists and has stock
+    const medicine = await MedicineRepository.getMedicineById(medicineId);
+    if (!medicine) {
+      throw new Error("Medicine not found");
+    }
+
+    if (medicine.stock < quantity) {
+      throw new Error("Not enough stock available for this medicine");
+    }
+
+    const cart = await this.getCart(userId);
+    return CartRepository.setCartItemQuantity(cart.id, medicineId, quantity);
+  }
+
   static async removeFromCart(userId: string, medicineId: string) {
     const cart = await this.getCart(userId);
     return CartRepository.removeCartItem(cart.id, medicineId);

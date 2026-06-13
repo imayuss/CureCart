@@ -34,7 +34,7 @@ export class CartRepository {
   }
 
   /**
-   * Add or update an item in the user's cart
+   * Add or update an item in the user's cart (increment logic)
    */
   static async upsertCartItem(cartId: string, medicineId: string, quantity: number) {
     const existingItem = await prisma.cartItem.findUnique({
@@ -50,6 +50,35 @@ export class CartRepository {
       return prisma.cartItem.update({
         where: { id: existingItem.id },
         data: { quantity: existingItem.quantity + quantity },
+      });
+    }
+
+    return prisma.cartItem.create({
+      data: {
+        cartId,
+        medicineId,
+        quantity,
+      },
+    });
+  }
+
+  /**
+   * Set the exact quantity of an item in the user's cart
+   */
+  static async setCartItemQuantity(cartId: string, medicineId: string, quantity: number) {
+    const existingItem = await prisma.cartItem.findUnique({
+      where: {
+        cartId_medicineId: {
+          cartId,
+          medicineId,
+        },
+      },
+    });
+
+    if (existingItem) {
+      return prisma.cartItem.update({
+        where: { id: existingItem.id },
+        data: { quantity },
       });
     }
 

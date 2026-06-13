@@ -92,7 +92,7 @@ export default async function MedicineDetailPage({ params }: { params: Promise<{
           })()}
 
           <div className="flex gap-4">
-            <AddToCartForm medicineId={medicine.id} />
+            <AddToCartForm medicineId={medicine.id} stock={medicine.stock} />
           </div>
 
           <DynamicMedicalDetails medicineId={medicine.id} medicineName={medicine.name} />
