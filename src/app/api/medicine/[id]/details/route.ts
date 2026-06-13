@@ -21,15 +21,15 @@ export async function GET(
       return NextResponse.json({ error: "Medicine not found" }, { status: 404 });
     }
 
-    // 2. Check cache (we use the existing `interactions` field to store the full AI JSON)
-    if (medicine.interactions && medicine.interactions.trim().startsWith("{")) {
-      try {
-        const cachedData = JSON.parse(medicine.interactions);
-        return NextResponse.json(cachedData);
-      } catch (e) {
-        // Fallback to regeneration if JSON is malformed
-        console.warn("Malformed JSON in interactions field. Regenerating.");
-      }
+    // 2. Check cache (we use the dedicated columns)
+    if (medicine.howToUse) {
+      return NextResponse.json({
+        uses: medicine.uses,
+        howToUse: medicine.howToUse,
+        sideEffects: medicine.sideEffectsList,
+        interactions: medicine.interactionsList,
+        warnings: medicine.warnings
+      });
     }
 
     // 3. Generate dynamically via Gemini
@@ -53,7 +53,11 @@ export async function GET(
       await prisma.medicine.update({
         where: { id: medicineId },
         data: {
-          interactions: JSON.stringify(aiDetails)
+          uses: aiDetails.uses || [],
+          howToUse: aiDetails.howToUse || null,
+          sideEffectsList: aiDetails.sideEffects || [],
+          interactionsList: aiDetails.interactions || [],
+          warnings: aiDetails.warnings || []
         }
       });
     } catch (dbError) {

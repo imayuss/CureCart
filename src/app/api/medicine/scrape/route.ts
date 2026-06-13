@@ -70,6 +70,7 @@ export async function POST(req: NextRequest) {
         manufacturer: aiData.manufacturer,
         price: aiData.price,
         requiresPrescription: aiData.requiresPrescription,
+        image: aiData.image || "https://ik.imagekit.io/princeagrawal/curecart/medicines/no_preview_available_B6-8t9pEX.png",
         stock: 100, // Default stock
         category: aiData.requiresPrescription ? "Prescription Drugs" : "OTC Products"
       }

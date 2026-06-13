@@ -65,8 +65,11 @@ model Medicine {
   updatedAt       DateTime @updatedAt
 
   // AI & Medical Info
-  interactions    String?  // JSON string or related model for AI drug interactions
-  sideEffects     String?
+  uses            String[] @default([])
+  howToUse        String?
+  warnings        String[] @default([])
+  sideEffectsList String[] @default([])
+  interactionsList String[] @default([])
   
   // Relationships
   cartItems       CartItem[]
