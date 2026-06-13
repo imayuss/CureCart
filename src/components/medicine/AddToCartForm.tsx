@@ -64,24 +64,24 @@ export function AddToCartForm({ medicineId, stock }: { medicineId: string, stock
   }
 
   return (
-    <div className="flex w-full items-center gap-2 lg:gap-3">
-      <div className="flex items-center h-10 bg-gray-100 rounded-lg overflow-hidden shrink-0 border border-gray-200">
+    <div className="flex flex-col xl:flex-row w-full gap-2">
+      <div className="flex items-center justify-between h-10 w-full xl:w-24 bg-gray-100 rounded-lg overflow-hidden shrink-0 border border-gray-200">
         <button 
           type="button"
           onClick={decrement}
           disabled={quantity <= 1 || loading}
-          className="w-8 h-full flex items-center justify-center text-gray-600 hover:bg-gray-200 disabled:opacity-30 transition-colors"
+          className="w-8 xl:w-7 h-full flex items-center justify-center text-gray-600 hover:bg-gray-200 disabled:opacity-30 transition-colors"
         >
           <Minus className="w-3.5 h-3.5" />
         </button>
-        <div className="w-8 h-full flex items-center justify-center font-bold text-sm text-gray-900 bg-white">
+        <div className="flex-1 h-full flex items-center justify-center font-bold text-sm text-gray-900 bg-white">
           {quantity}
         </div>
         <button 
           type="button"
           onClick={increment}
           disabled={quantity >= stock || loading}
-          className="w-8 h-full flex items-center justify-center text-gray-600 hover:bg-gray-200 disabled:opacity-30 transition-colors"
+          className="w-8 xl:w-7 h-full flex items-center justify-center text-gray-600 hover:bg-gray-200 disabled:opacity-30 transition-colors"
         >
           <Plus className="w-3.5 h-3.5" />
         </button>
@@ -90,7 +90,7 @@ export function AddToCartForm({ medicineId, stock }: { medicineId: string, stock
       <Button 
         onClick={handleAddToCart} 
         disabled={loading}
-        className="flex-1 bg-zinc-900 hover:bg-emerald-600 text-white transition-colors duration-300 h-10 text-xs sm:text-sm font-bold rounded-lg shadow-sm border-0 flex items-center justify-center gap-1.5 px-2"
+        className="w-full flex-1 bg-zinc-900 hover:bg-emerald-600 text-white transition-colors duration-300 h-10 text-xs sm:text-sm font-bold rounded-lg shadow-sm border-0 flex items-center justify-center gap-1.5 px-2"
       >
         {loading ? (
           <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>

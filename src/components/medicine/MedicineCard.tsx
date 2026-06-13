@@ -58,13 +58,24 @@ export function MedicineCard({ medicine }: { medicine: MedicineProps }) {
       {/* Info Container */}
       <div className="p-5 flex flex-col flex-1">
         <Link href={`/medicine/${medicine.id}`} className="flex flex-col flex-1">
-          <p className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider mb-2 truncate">
-            {medicine.manufacturer || 'General'}
-          </p>
-          
           <h3 itemProp="name" className="font-bold text-base text-gray-900 line-clamp-2 leading-snug group-hover:text-emerald-700 transition-colors">
             {medicine.name}
           </h3>
+          
+          <p className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider mt-2 truncate">
+            {medicine.manufacturer || 'General'}
+          </p>
+
+          {(medicine.packaging || medicine.composition) && (
+            <div className="mt-3 space-y-1">
+              {medicine.packaging && (
+                <p className="text-xs text-zinc-600 line-clamp-1"><span className="font-medium text-zinc-400">Pack:</span> {medicine.packaging}</p>
+              )}
+              {medicine.composition && (
+                <p className="text-xs text-zinc-600 line-clamp-2 leading-relaxed"><span className="font-medium text-zinc-400">Comp:</span> {medicine.composition}</p>
+              )}
+            </div>
+          )}
           
           {/* Fill available space to push price down */}
           <div className="flex-1 min-h-[1rem]"></div>
