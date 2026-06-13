@@ -76,8 +76,27 @@ export const authOptions: NextAuthOptions = {
     },
     async jwt({ token, user }) {
       if (user) {
-        token.role = user.role;
-        token.id = user.id;
+        // For Credentials provider, user already has role from authorize()
+        if (user.role) {
+          token.role = user.role;
+          token.id = user.id;
+        } else {
+          // For Google provider, user object only has email/name/image.
+          // We must fetch the real role from the database here.
+          try {
+            if (user.email) {
+              const dbUser = await prisma.user.findUnique({
+                where: { email: user.email }
+              });
+              if (dbUser) {
+                token.role = dbUser.role;
+                token.id = dbUser.id;
+              }
+            }
+          } catch (e) {
+            console.error("Error fetching role for JWT:", e);
+          }
+        }
       }
       return token;
     },
