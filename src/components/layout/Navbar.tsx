@@ -67,7 +67,7 @@ export function Navbar() {
 
         {/* Right Actions */}
         <div className="flex items-center gap-5">
-          <Link href="/search" className="text-zinc-500 hover:text-zinc-900 transition-colors hidden sm:block">
+          <Link href="/ai-search" className="text-zinc-500 hover:text-zinc-900 transition-colors hidden sm:block">
             <Search className="w-5 h-5" />
           </Link>
           
