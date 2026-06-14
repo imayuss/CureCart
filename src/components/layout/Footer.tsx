@@ -54,10 +54,10 @@ export function Footer() {
             </h4>
             <ul className="space-y-4">
               <li>
-                <Link href="/?category=prescription" className="text-zinc-400 hover:text-emerald-400 hover:translate-x-1 inline-block transition-all text-sm font-medium">Prescription Drugs</Link>
+                <Link href="/?category=Prescription%20Drugs" className="text-zinc-400 hover:text-emerald-400 hover:translate-x-1 inline-block transition-all text-sm font-medium">Prescription Drugs</Link>
               </li>
               <li>
-                <Link href="/?category=otc" className="text-zinc-400 hover:text-emerald-400 hover:translate-x-1 inline-block transition-all text-sm font-medium">Over-The-Counter</Link>
+                <Link href="/?category=OTC%20Products" className="text-zinc-400 hover:text-emerald-400 hover:translate-x-1 inline-block transition-all text-sm font-medium">Over-The-Counter</Link>
               </li>
               <li>
                 <Link href="/lab-tests" className="text-zinc-400 hover:text-emerald-400 hover:translate-x-1 inline-block transition-all text-sm font-medium">Lab Tests & Checkups</Link>
