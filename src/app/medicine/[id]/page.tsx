@@ -45,7 +45,7 @@ export default async function MedicineDetailPage({ params }: { params: Promise<{
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
         {/* Left Side: Medicine Image & AI Assistant */}
         <div className="lg:col-span-4 flex flex-col gap-8">
-          <div className="bg-white rounded-[2rem] p-8 flex justify-center items-center h-80 border border-gray-100 shadow-[0_4px_20px_rgb(0,0,0,0.03)] overflow-hidden group">
+          <div className="relative bg-white rounded-[2rem] p-8 flex justify-center items-center h-80 border border-gray-100 shadow-[0_4px_20px_rgb(0,0,0,0.03)] overflow-hidden group">
             {medicine.image ? (
               <Image 
                 src={medicine.image} 
