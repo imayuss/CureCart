@@ -67,8 +67,13 @@ export default function HealthBotClient({ medicineName }: { medicineName: string
           </div>
         ))}
         {loading && (
-          <div className="bg-gray-100 text-gray-800 p-3 rounded-lg mr-8 w-fit text-sm animate-pulse">
-            Consulting verified sources...
+          <div className="bg-white border border-emerald-100 text-emerald-600 p-3.5 rounded-2xl mr-8 w-fit text-sm shadow-sm flex items-center gap-2">
+            <div className="flex gap-1">
+              <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce"></span>
+              <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce [animation-delay:0.2s]"></span>
+              <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce [animation-delay:0.4s]"></span>
+            </div>
+            <span className="font-medium">Typing...</span>
           </div>
         )}
       </div>
