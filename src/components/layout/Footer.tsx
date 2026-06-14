@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Mail, Phone, MapPin, Facebook, Instagram, HeartPulse } from "lucide-react";
+import { Mail, Phone, MapPin, HeartPulse } from "lucide-react";
 
 export function Footer() {
   return (
@@ -22,14 +22,6 @@ export function Footer() {
             <p className="text-zinc-400 text-sm leading-relaxed font-medium">
               Your trusted AI-powered digital pharmacy. We use advanced technology and verified medical data to provide the safest healthcare experience.
             </p>
-            <div className="flex items-center gap-4 pt-2">
-              <a href="#" className="w-10 h-10 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-400 hover:bg-emerald-600 hover:border-emerald-500 hover:text-white transition-all">
-                <Facebook className="w-4 h-4" />
-              </a>
-              <a href="#" className="w-10 h-10 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-400 hover:bg-emerald-600 hover:border-emerald-500 hover:text-white transition-all">
-                <Instagram className="w-4 h-4" />
-              </a>
-            </div>
           </div>
 
           {/* Quick Links */}
