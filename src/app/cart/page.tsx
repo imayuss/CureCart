@@ -94,8 +94,6 @@ export default async function CartPage() {
                 </div>
                 
                 <CheckoutButton />
-                
-                <p className="text-xs text-gray-400 text-center mt-4 font-medium">Tax calculated at checkout</p>
               </div>
             </div>
           </div>

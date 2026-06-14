@@ -92,7 +92,7 @@ export default async function MedicineDetailPage({ params }: { params: Promise<{
           </div>
 
           <div className="flex items-baseline gap-3 mb-8">
-            <p className="text-3xl font-black text-zinc-900 tracking-tighter">₹{medicine.price.toFixed(2)}</p>
+            <p className="text-3xl font-black text-zinc-900 tracking-tighter">MRP ₹{medicine.price.toFixed(2)}</p>
             <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Inclusive of all taxes</p>
           </div>
           

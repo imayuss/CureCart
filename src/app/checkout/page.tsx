@@ -35,8 +35,7 @@ export default async function CheckoutPage() {
   }
 
   const subtotal = activeCart.items.reduce((total, item) => total + (item.medicine.price * item.quantity), 0);
-  const tax = subtotal * 0.05; // 5% GST
-  const totalAmount = subtotal + tax;
+  const totalAmount = subtotal;
 
   const fullAddress = [user.address, user.city, user.state, user.zipCode].filter(Boolean).join(", ");
   const isProfileComplete = Boolean(user.phone && user.address && user.city && user.state && user.zipCode);
@@ -151,10 +150,6 @@ export default async function CheckoutPage() {
                 <div className="flex justify-between text-gray-600 font-medium">
                   <span>Subtotal</span>
                   <span className="text-gray-900 font-bold">₹{subtotal.toFixed(2)}</span>
-                </div>
-                <div className="flex justify-between text-gray-600 font-medium">
-                  <span>Tax (5% GST)</span>
-                  <span className="text-gray-900 font-bold">₹{tax.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between text-gray-600 font-medium">
                   <span>Shipping</span>
